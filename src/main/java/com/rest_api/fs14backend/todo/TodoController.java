@@ -1,5 +1,8 @@
 package com.rest_api.fs14backend.todo;
 
+import com.rest_api.fs14backend.category.Category;
+import com.rest_api.fs14backend.category.CategoryRepository;
+import com.rest_api.fs14backend.category.CategoryService;
 import com.rest_api.fs14backend.exceptions.NotFoundException;
 import java.util.List;
 import java.util.UUID;
@@ -11,13 +14,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 @RestController
 @RequestMapping("api/v1/todos")
 public class TodoController {
 
   @Autowired
   private TodoService todoService;
+  @Autowired
+  private CategoryService categoryService;
+
+  @Autowired
+  private TodoMapper todoMapper;
+
+  @PostMapping("/")
+  public Todo createOne(@RequestBody TodoDTO todoDTO) {
+    UUID categoryId = todoDTO.getCategoryId();
+    Category category = categoryService.findById(categoryId);
+
+    Todo todo = todoMapper.toTodo(todoDTO, category);
+
+    return todoService.createOne(todo);
+  }
 
   @GetMapping("/")
   public List<Todo> findAll() {
@@ -32,11 +49,6 @@ public class TodoController {
       throw new NotFoundException("Todo not found");
     }
     return todo;
-  }
-
-  @PostMapping("/")
-  public Todo createOne(@RequestBody Todo todo) {
-    return todoService.createOne(todo);
   }
 
   @DeleteMapping("/{id}")
