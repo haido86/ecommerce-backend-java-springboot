@@ -8,15 +8,14 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
 
-@Entity(name = "user")
-@Table(name = "customer")
+@Entity
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 public class User {
   @Id
-  @GeneratedValue
-  @UuidGenerator
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   @Column(unique = true)
   private String username;
