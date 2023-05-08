@@ -26,19 +26,10 @@ public class Product {
     private String title;
     @Column(nullable = false)
     private String description;
-    @Column()
     private String image;
-    @Column()
     private int quantity;
     @ManyToOne( optional = false)
     private Category category;
-    @Column(nullable = false, updatable = false)
-    @CreationTimestamp
-    private Date createdAt;
-    @Column()
-    @UpdateTimestamp
-    private Date updatedBy;
-
 
     public Product(Double price, String title, String description, String image, int quantity, Category category ){
         this.price = price;
