@@ -30,6 +30,7 @@ public class ProductController {
     public Product createOne(@RequestBody ProductDTO productDTO) {
         Long categoryId = productDTO.getCategoryId();
         Category category = categoryService.findById(categoryId);
+
         if (category == null) {
             throw new NotFoundException("Category not found");
         }
