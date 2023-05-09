@@ -30,9 +30,8 @@ public class ProductService {
 
             // Generate a transformed image URL
             String transformedUrl = cloudinary.url()
-                    .transformation(new Transformation().width(100).height(100).crop("fill"))
+                    .transformation(new Transformation().width(768).height(1152).crop("fill").gravity("center").zoom(2.0))
                     .generate(uploadResult.get("public_id").toString() + "." + uploadResult.get("format").toString());
-
             return transformedUrl;
         } catch (IOException e) {
             // Handle any exceptions
