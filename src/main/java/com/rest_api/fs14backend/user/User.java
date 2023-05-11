@@ -13,18 +13,26 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class User {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(unique = true)
-  private String username;
+    @Column(unique = true)
+    private String username;
 
-  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-  private String password;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
 
-  public User(String username, String password){
-    this.username = username;
-    this.password = password;
-  }
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    enum Role {
+        USER, ADMIN
+    }
+
+    public User(String username, String password, Role role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
 }
