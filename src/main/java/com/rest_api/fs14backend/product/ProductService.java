@@ -52,7 +52,6 @@ public class ProductService {
 
     public Product findById(Long id) {
         Product product = productRepository.findById(id).orElse(null);
-
         if (product == null) {
             throw new NotFoundException("Product not found");
         }
@@ -60,6 +59,10 @@ public class ProductService {
     }
 
     public void deleteById(Long id) {
+        Product product = productRepository.findById(id).orElse(null);
+        if (product == null) {
+            throw new NotFoundException("Product not found");
+        }
         productRepository.deleteById(id);
     }
 }

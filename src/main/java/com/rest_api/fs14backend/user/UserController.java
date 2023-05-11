@@ -1,5 +1,6 @@
 package com.rest_api.fs14backend.user;
 
+import com.rest_api.fs14backend.exceptions.NotFoundException;
 import com.rest_api.fs14backend.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,8 +47,11 @@ public class UserController {
 
     @PostMapping("/auth/signup")
     public User signup(@RequestBody User user) {
-        User newUser = new User(user.getUsername(), passwordEncoder.encode(user.getPassword()), User.Role.USER);
-
+        User newUser = new User(
+                user.getUsername(),
+                passwordEncoder.encode(user.getPassword()),
+                User.Role.USER
+        );
         userRepository.save(newUser);
         return newUser;
     }

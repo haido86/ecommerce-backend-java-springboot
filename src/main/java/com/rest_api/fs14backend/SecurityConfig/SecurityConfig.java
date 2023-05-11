@@ -17,11 +17,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 public class SecurityConfig {
 
     @Autowired
     private JwtFilter jwtFilter;
+    @Autowired
+    private CorsFilter corsFilter;
 
     @Bean
     public AuthenticationManager authenticationManager(
@@ -37,7 +41,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
+        HttpSecurity httpSecurity = http
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
@@ -57,8 +61,8 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-//                .httpBasic(withDefaults()).formLogin()
-//                .and()
+                .httpBasic(withDefaults()).formLogin()
+                .and()
                 // Add JWT token filter
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
