@@ -1,6 +1,9 @@
 package com.rest_api.fs14backend.order;
 
 import com.rest_api.fs14backend.exceptions.NotFoundException;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

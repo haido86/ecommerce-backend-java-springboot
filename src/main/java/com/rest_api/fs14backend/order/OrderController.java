@@ -1,10 +1,7 @@
 package com.rest_api.fs14backend.order;
 
+import com.rest_api.fs14backend.cart.CartItem;
 import com.rest_api.fs14backend.exceptions.NotFoundException;
-//import com.rest_api.fs14backend.orderItem.OrderItem;
-//import com.rest_api.fs14backend.orderItem.OrderItemController;
-//import com.rest_api.fs14backend.orderItem.OrderItemMapper;
-//import com.rest_api.fs14backend.orderItem.OrderItemService;
 import com.rest_api.fs14backend.orderItem.OrderItem;
 import com.rest_api.fs14backend.orderItem.OrderItemController;
 import com.rest_api.fs14backend.orderItem.OrderItemService;
@@ -45,24 +42,25 @@ public class OrderController {
 
     @PostMapping
     public Order createOne(@RequestBody OrderRequest orderRequest) {
-
+        //check if user from orderRequest exist or not
         Long userId = orderRequest.getOrderDTO().getUserId();
-
-
-
         User user = userService.findById(userId);
-        Order orderFromRequest = orderMapper.toOrder(orderRequest.getOrderDTO(), user);
-        List<Long> productIds = orderRequest.getProductIds();
+        //get the list of products from orderRequest with productId and quantity
+        List<CartItem> cartItemList = orderRequest.getCartItemList();
 
+        //Create order if user exist
+        Order orderFromRequest = orderMapper.toOrder(orderRequest.getOrderDTO(), user);
         Order order = orderService.createOne(orderFromRequest);
 
-        // do mutations base on id
-        for (Long productId : productIds) {
-            Product foundProduct = productService.findById(productId);
+        //check if all the products in the list of the orderRequest exist, if exists, create orderItem link
+        //to new created order
+        for (CartItem cartItem : cartItemList) {
+            Product foundProduct = productService.findById(cartItem.getProductId());
+            int quantity = cartItem.getQuantity();
             if (foundProduct == null) {
                 throw new NotFoundException("product not found");
             } else {
-                OrderItem orderItem = new OrderItem(1, foundProduct, order);
+                OrderItem orderItem = new OrderItem(quantity, foundProduct, order);
                 orderItemService.createOrderItem(orderItem);
             }
         }
