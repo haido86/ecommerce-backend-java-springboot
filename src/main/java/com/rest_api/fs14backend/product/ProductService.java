@@ -73,6 +73,7 @@ public class ProductService {
         String transformImageUrl = uploadAndTransformImage(product.getImage());
         existingProduct.setImage(transformImageUrl);
         existingProduct.setCategory(product.getCategory());
+        existingProduct.setInventory(product.getInventory());
 
         return productRepository.save(existingProduct);
     }
