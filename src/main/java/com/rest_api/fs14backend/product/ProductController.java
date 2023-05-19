@@ -31,25 +31,20 @@ public class ProductController {
 
     @PostMapping
     public Product createOne(@RequestBody ProductRequest productRequest) {
-        System.out.println("herere-----------"+productRequest);
         ProductDTO productDTO = productRequest.getProductDTO();
-        System.out.println("productDTO" + productDTO);
         Long categoryId = productDTO.getCategoryId();
-        System.out.println("categoryId" + categoryId);
         Category category = categoryService.findById(categoryId);
 
-
         Inventory inventory = new Inventory(productRequest.getQuantity());
-        System.out.println("inventory" + inventory);
-        Product product = productMapper.toProduct(productDTO, inventory,category);
-        System.out.println("product" + product);
-        Product newProduct= productService.createProduct(product);
-        return newProduct;
+        Product product = productMapper.toProduct(productDTO, inventory, category);
+
+        return productService.createProduct(product);
     }
 
     @GetMapping("/{id}")
     public Product findById(@PathVariable Long id) {
         Product product = productService.findById(id);
+
         return product;
     }
 
@@ -57,8 +52,10 @@ public class ProductController {
     public Product updateOne(@PathVariable Long id, @RequestBody ProductRequest productRequest) {
         ProductDTO productDTO = productRequest.getProductDTO();
         Category category = categoryService.findById(productRequest.getProductDTO().getCategoryId());
-        Inventory inventory=new Inventory(productRequest.getQuantity());
-        Product product = productMapper.toProduct(productDTO,inventory, category);
+
+        Inventory inventory = new Inventory(productRequest.getQuantity());
+        Product product = productMapper.toProduct(productDTO, inventory, category);
+
         return productService.updateById(id, product);
     }
 
