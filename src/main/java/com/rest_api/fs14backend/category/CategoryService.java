@@ -20,7 +20,11 @@ public class CategoryService {
     }
 
     public Category findById(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElse(null);
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if ( category== null){
+            throw new NotFoundException("Category not found");
+        }
+        return category;
     }
 
     public void deleteById(Long categoryId) {

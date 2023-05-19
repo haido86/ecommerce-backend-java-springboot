@@ -3,8 +3,8 @@ package com.rest_api.fs14backend.product;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
+import com.rest_api.fs14backend.category.CategoryService;
 import com.rest_api.fs14backend.exceptions.NotFoundException;
-import com.rest_api.fs14backend.imageConfig.ImageConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +18,9 @@ public class ProductService {
     private ProductRepository productRepository;
     @Autowired
     private Cloudinary cloudinary;
+
+    @Autowired
+    private CategoryService categoryService;
 
     public List<Product> getAll() {
         return productRepository.findAll();
@@ -57,6 +60,23 @@ public class ProductService {
         }
         return product;
     }
+
+    public Product updateById(Long id, Product product) {
+        Product existingProduct = productRepository.findById(id).orElse(null);
+        if (existingProduct == null) {
+            throw new NotFoundException("Product not found");
+        }
+
+        existingProduct.setTitle(product.getTitle());
+        existingProduct.setPrice(product.getPrice());
+        existingProduct.setDescription(product.getDescription());
+        String transformImageUrl = uploadAndTransformImage(product.getImage());
+        existingProduct.setImage(transformImageUrl);
+        existingProduct.setCategory(product.getCategory());
+
+        return productRepository.save(existingProduct);
+    }
+
 
     public void deleteById(Long id) {
         Product product = productRepository.findById(id).orElse(null);
