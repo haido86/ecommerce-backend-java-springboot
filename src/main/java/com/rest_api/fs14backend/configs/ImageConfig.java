@@ -1,4 +1,4 @@
-package com.rest_api.fs14backend.imageConfig;
+package com.rest_api.fs14backend.configs;
 
 import com.cloudinary.Cloudinary;
 import lombok.Data;
