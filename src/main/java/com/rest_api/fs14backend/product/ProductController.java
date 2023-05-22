@@ -32,8 +32,7 @@ public class ProductController {
     @PostMapping
     public Product createOne(@RequestBody ProductRequest productRequest) {
         ProductDTO productDTO = productRequest.getProductDTO();
-        Long categoryId = productDTO.getCategoryId();
-        Category category = categoryService.findById(categoryId);
+        Category category = categoryService.findById(productDTO.getCategoryId());
 
         Inventory inventory = new Inventory(productRequest.getQuantity());
         Product product = productMapper.toProduct(productDTO, inventory, category);
@@ -50,10 +49,12 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public Product updateOne(@PathVariable Long id, @RequestBody ProductRequest productRequest) {
+        Product existingProduct = productService.findById(id);
         ProductDTO productDTO = productRequest.getProductDTO();
-        Category category = categoryService.findById(productRequest.getProductDTO().getCategoryId());
+        Category category = categoryService.findById(productDTO.getCategoryId());
 
-        Inventory inventory = new Inventory(productRequest.getQuantity());
+        Long inventoryId = existingProduct.getInventory().getId();
+        Inventory inventory = inventoryService.updateOne(inventoryId, productRequest.getQuantity());
         Product product = productMapper.toProduct(productDTO, inventory, category);
 
         return productService.updateById(id, product);
