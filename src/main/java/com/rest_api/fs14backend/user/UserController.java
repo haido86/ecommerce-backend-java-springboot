@@ -1,6 +1,5 @@
 package com.rest_api.fs14backend.user;
 
-import com.rest_api.fs14backend.exceptions.NotFoundException;
 import com.rest_api.fs14backend.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping("/auth/signin")
-    public AuthResponse login(@RequestBody AuthRequest authRequest) {
+    public Map<String, String> login(@RequestBody AuthRequest authRequest) {
         Map<String, String> token = new HashMap<>();
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -42,7 +41,7 @@ public class UserController {
         );
         User user = userRepository.findByUsername(authRequest.getUsername());
         token.put("token", jwtUtils.generateToken(user));
-        return new AuthResponse(user, token);
+        return token;
     }
 
     @PostMapping("/auth/signup")
@@ -65,5 +64,4 @@ public class UserController {
     public void deleteById(@PathVariable Long id) {
         userService.deleteOne(id);
     }
-
 }

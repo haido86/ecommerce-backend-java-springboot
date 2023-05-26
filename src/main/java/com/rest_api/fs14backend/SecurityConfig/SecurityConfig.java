@@ -52,17 +52,18 @@ public class SecurityConfig {
                         "/api/v1/products/{id}",
                         "/api/v1/users",
                         "/api/v1/users/{id}",
-                        "api/v1/categories")
+                        "/api/v1/categories",
+                        "/api/v1/orders"
+                     )
                 .permitAll()
-//                .requestMatchers("GET", "/api/v1/users").hasRole("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .httpBasic(withDefaults()).formLogin()
-                .and()
+//                .httpBasic(withDefaults()).formLogin()
+//                .and()
                 // Add JWT token filter
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
