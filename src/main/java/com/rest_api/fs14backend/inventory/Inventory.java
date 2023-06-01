@@ -1,19 +1,20 @@
-package com.rest_api.fs14backend.category;
+package com.rest_api.fs14backend.inventory;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Entity
-@Table(name = "categories")
+@Table(name = "inventories")
 @Data
 @NoArgsConstructor
-public class Category {
+public class Inventory {
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true, nullable = false)
-    private String name;
+    private int quantity;
+
+    public Inventory(int quantity) {
+        this.quantity = quantity;
+    }
 }
