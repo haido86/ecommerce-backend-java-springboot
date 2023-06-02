@@ -3,8 +3,11 @@ package com.rest_api.fs14backend.product;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
+import com.rest_api.fs14backend.category.Category;
 import com.rest_api.fs14backend.category.CategoryService;
 import com.rest_api.fs14backend.exceptions.NotFoundException;
+import com.rest_api.fs14backend.inventory.Inventory;
+import com.rest_api.fs14backend.inventory.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +21,12 @@ public class ProductService {
     private ProductRepository productRepository;
     @Autowired
     private Cloudinary cloudinary;
-
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private ProductMapper productMapper;
+    @Autowired
+    private InventoryService inventoryService;
 
     public List<Product> getAll() {
         return productRepository.findAll();
@@ -42,14 +48,22 @@ public class ProductService {
         }
     }
 
-    public Product createProduct(Product product) {
+    public Product createProduct(ProductRequest productRequest) {
         // Upload and transform the image
-        String transformImageUrl = uploadAndTransformImage(product.getImage());
+        String transformImageUrl = uploadAndTransformImage(productRequest.getImage());
 
-        // Set the transformed image URL in the product
-        product.setImage(transformImageUrl);
+        Category category = categoryService.findById(productRequest.getCategoryId());
+        Inventory inventory = new Inventory(productRequest.getQuantity());
 
-        // Save the product to the database
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setTitle(productRequest.getTitle());
+        productDTO.setPrice(productRequest.getPrice());
+        productDTO.setDescription(productRequest.getDescription());
+        productDTO.setImage(transformImageUrl);
+        productDTO.setCategoryId(category.getId());
+
+        Product product = productMapper.toProduct(productDTO, inventory, category);
+
         return productRepository.save(product);
     }
 
@@ -61,11 +75,24 @@ public class ProductService {
         return product;
     }
 
-    public Product updateById(Long id, Product product) {
+    public Product updateById(Long id, ProductRequest productRequest) {
         Product existingProduct = productRepository.findById(id).orElse(null);
         if (existingProduct == null) {
             throw new NotFoundException("Product not found");
         }
+        // Transform productRequest to productDTO and then mapping to product
+        Category category = categoryService.findById(productRequest.getCategoryId());
+
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setTitle(productRequest.getTitle());
+        productDTO.setPrice(productRequest.getPrice());
+        productDTO.setDescription(productRequest.getDescription());
+        productDTO.setImage(productRequest.getImage());
+
+        Long inventoryId = existingProduct.getInventory().getId();
+        Inventory inventory = inventoryService.updateOne(inventoryId, productRequest.getQuantity());
+
+        Product product = productMapper.toProduct(productDTO, inventory, category);
 
         existingProduct.setTitle(product.getTitle());
         existingProduct.setPrice(product.getPrice());
@@ -77,7 +104,6 @@ public class ProductService {
 
         return productRepository.save(existingProduct);
     }
-
 
     public void deleteById(Long id) {
         Product product = productRepository.findById(id).orElse(null);

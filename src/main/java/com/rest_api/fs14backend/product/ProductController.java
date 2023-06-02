@@ -15,15 +15,6 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private ProductMapper productMapper;
-
-    @Autowired
-    private InventoryService inventoryService;
-
     @GetMapping
     public List<Product> getProduct() {
         return productService.getAll();
@@ -31,24 +22,7 @@ public class ProductController {
 
     @PostMapping
     public Product createOne(@RequestBody ProductRequest productRequest) {
-        String title = productRequest.getTitle();
-        double price = productRequest.getPrice();
-        String description = productRequest.getDescription();
-        String image = productRequest.getImage();
-
-        Category category = categoryService.findById(productRequest.getCategoryId());
-        Inventory inventory = new Inventory(productRequest.getQuantity());
-
-        ProductDTO productDTO= new ProductDTO();
-        productDTO.setTitle(title);
-        productDTO.setPrice(price);
-        productDTO.setDescription(description);
-        productDTO.setImage(image);
-        productDTO.setCategoryId(category.getId());
-
-        Product product = productMapper.toProduct(productDTO, inventory, category);
-
-        return productService.createProduct(product);
+        return productService.createProduct(productRequest);
     }
 
     @GetMapping("/{id}")
@@ -60,22 +34,8 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public Product updateOne(@PathVariable Long id, @RequestBody ProductRequest productRequest) {
-        Product existingProduct = productService.findById(id);
-        Category category = categoryService.findById(productRequest.getCategoryId());
-
-        ProductDTO productDTO= new ProductDTO();
-        productDTO.setTitle(productRequest.getTitle());
-        productDTO.setPrice(productRequest.getPrice());
-        productDTO.setDescription(productRequest.getDescription());
-        productDTO.setImage(productRequest.getImage());
-
-        Long inventoryId = existingProduct.getInventory().getId();
-        Inventory inventory = inventoryService.updateOne(inventoryId, productRequest.getQuantity());
-        Product product = productMapper.toProduct(productDTO, inventory, category);
-
-        return productService.updateById(id, product);
+        return productService.updateById(id, productRequest);
     }
-
 
     @DeleteMapping("/{id}")
     public void deleteOne(@PathVariable Long id) {

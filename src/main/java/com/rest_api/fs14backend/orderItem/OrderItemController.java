@@ -15,12 +15,13 @@ import java.util.List;
 public class OrderItemController {
     @Autowired
     private OrderItemService orderItemService;
-
     @Autowired
     private ProductService productService;
 
     @GetMapping
-    public List<OrderItem> getOrderItem() {return orderItemService.getAll();}
+    public List<OrderItem> getOrderItem() {
+        return orderItemService.getAll();
+    }
 
     @GetMapping("/{id}")
     public OrderItem findById(@PathVariable Long id) {
@@ -30,7 +31,7 @@ public class OrderItemController {
 
     @DeleteMapping("/{id}")
     public void deleteOne(@PathVariable Long id) {
-        OrderItem orderItem  = orderItemService.findById(id);
+        OrderItem orderItem = orderItemService.findById(id);
         orderItemService.deleteById(id);
     }
 }
