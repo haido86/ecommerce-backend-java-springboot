@@ -19,18 +19,14 @@ import java.util.List;
 public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private OrderMapper orderMapper;
-
     @Autowired
     private OrderItemService orderItemService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private OrderMapper orderMapper;
 
     public List<Order> findAll() {
         return orderRepository.findAll();
