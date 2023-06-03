@@ -1,5 +1,6 @@
 package com.rest_api.fs14backend.order;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.rest_api.fs14backend.orderItem.OrderItem;
 import com.rest_api.fs14backend.user.User;
 import jakarta.persistence.*;
@@ -24,6 +25,7 @@ public class Order {
     private Date purchaseAt;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "user_id")
     private User user;
 
