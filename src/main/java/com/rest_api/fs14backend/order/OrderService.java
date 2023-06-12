@@ -40,7 +40,7 @@ public class OrderService {
         return order;
     }
 
-    public Order createOne(OrderRequest orderRequest) throws Exception{
+    public Order createOne(OrderRequest orderRequest) throws Exception {
         try {
             //check if user from orderRequest exist or not
             Long userId = orderRequest.getUserId();
@@ -89,6 +89,11 @@ public class OrderService {
         Order order = orderRepository.findById(id).orElse(null);
         if (order == null) {
             throw new NotFoundException("Order not found");
+        }
+
+        List<OrderItem> orderItemList = order.getOrderItemList();
+        for (OrderItem item : orderItemList) {
+            orderItemService.deleteById(item.getId());
         }
         orderRepository.deleteById(id);
     }

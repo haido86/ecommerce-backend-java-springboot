@@ -1,6 +1,7 @@
 package com.rest_api.fs14backend.order;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.rest_api.fs14backend.orderItem.OrderItem;
 import com.rest_api.fs14backend.user.User;
 import jakarta.persistence.*;
@@ -24,8 +25,8 @@ public class Order {
     @CreationTimestamp
     private Date purchaseAt;
 
-    @ManyToOne
-    @JsonBackReference
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonManagedReference
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -36,11 +37,16 @@ public class Order {
         this.user = user;
     }
 
-    public List<OrderItem> getOrderItemList() {
-        return orderItemList;
+    public Order(User user, List<OrderItem> OrderItemList) {
+        this.user = user;
+        this.orderItemList = orderItemList;
     }
 
-    public void setOrderItemList() {
+    public void setOrderItemList(List<OrderItem> orderItemList) {
         this.orderItemList = orderItemList;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
