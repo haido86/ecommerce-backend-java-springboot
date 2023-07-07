@@ -15,15 +15,6 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private CategoryService categoryService;
-
-    @Autowired
-    private ProductMapper productMapper;
-
-    @Autowired
-    private InventoryService inventoryService;
-
     @GetMapping
     public List<Product> getProduct() {
         return productService.getAll();
@@ -31,13 +22,7 @@ public class ProductController {
 
     @PostMapping
     public Product createOne(@RequestBody ProductRequest productRequest) {
-        ProductDTO productDTO = productRequest.getProductDTO();
-        Category category = categoryService.findById(productDTO.getCategoryId());
-
-        Inventory inventory = new Inventory(productRequest.getQuantity());
-        Product product = productMapper.toProduct(productDTO, inventory, category);
-
-        return productService.createProduct(product);
+        return productService.createProduct(productRequest);
     }
 
     @GetMapping("/{id}")
@@ -49,17 +34,8 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public Product updateOne(@PathVariable Long id, @RequestBody ProductRequest productRequest) {
-        Product existingProduct = productService.findById(id);
-        ProductDTO productDTO = productRequest.getProductDTO();
-        Category category = categoryService.findById(productDTO.getCategoryId());
-
-        Long inventoryId = existingProduct.getInventory().getId();
-        Inventory inventory = inventoryService.updateOne(inventoryId, productRequest.getQuantity());
-        Product product = productMapper.toProduct(productDTO, inventory, category);
-
-        return productService.updateById(id, product);
+        return productService.updateById(id, productRequest);
     }
-
 
     @DeleteMapping("/{id}")
     public void deleteOne(@PathVariable Long id) {

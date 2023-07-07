@@ -8,6 +8,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -48,14 +49,14 @@ public class SecurityConfig {
                 .requestMatchers(
                         "/api/v1/auth/signup",
                         "/api/v1/auth/signin",
-                        "/api/v1/products",
-                        "/api/v1/products/{id}",
-                        "/api/v1/users",
-                        "/api/v1/users/{id}",
-                        "/api/v1/categories",
-                        "/api/v1/orders"
+                        "/api/v1/products/**",
+                        "/api/v1/users/**",
+                        "/api/v1/categories/**",
+                        "/api/v1/orders/**"
+
                      )
                 .permitAll()
+//                .requestMatchers(HttpMethod.GET, "/api/v1/products/**","/api/v1/users/**","/api/v1/categories/**").permitAll()
                 .requestMatchers("/swagger-ui/**","/swagger-ui.html","/v3/api-docs/**")
                 .permitAll()
                 .anyRequest()

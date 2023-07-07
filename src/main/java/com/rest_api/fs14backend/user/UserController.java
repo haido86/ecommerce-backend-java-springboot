@@ -16,43 +16,20 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private JwtUtils jwtUtils;
 
     @GetMapping("/users")
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userService.findAll();
     }
 
     @PostMapping("/auth/signin")
     public Map<String, String> login(@RequestBody AuthRequest authRequest) {
-        Map<String, String> token = new HashMap<>();
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        authRequest.getUsername(),
-                        authRequest.getPassword()
-                )
-        );
-        User user = userRepository.findByUsername(authRequest.getUsername());
-        token.put("token", jwtUtils.generateToken(user));
-        return token;
+        return userService.loginUser(authRequest);
     }
 
     @PostMapping("/auth/signup")
     public User signup(@RequestBody User user) {
-        User newUser = new User(
-                user.getUsername(),
-                passwordEncoder.encode(user.getPassword()),
-                User.Role.USER
-        );
-        userRepository.save(newUser);
-        return newUser;
+        return userService.createOne(user);
     }
 
     @GetMapping("/users/{id}")

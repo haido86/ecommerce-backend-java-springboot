@@ -13,12 +13,12 @@ public class OrderRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private OrderDTO orderDTO;
+    private Long userId;
     //instead of list of productIds, we need to send list of productId and quantity as one: define cartItem {id, productId, quantity}
     private List<CartItem> cartItemList;
 
-    public OrderRequest(OrderDTO orderDTO, List<CartItem> cartItemList) {
-        this.orderDTO = orderDTO;
+    public OrderRequest(Long userId, List<CartItem> cartItemList) {
+        this.userId = userId;
         this.cartItemList = cartItemList;
     }
 }
